@@ -1,103 +1,140 @@
-import Image from "next/image";
+// src/app/page.tsx
 
-export default function Home() {
+import React from 'react';
+import Link from 'next/link';
+import Image from 'next/image'; // Menggunakan komponen Image dari Next.js
+
+export default function LandingPage() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
+    <div className="min-h-screen bg-gray-50 text-gray-800">
+      {/* Hero Section */}
+      <section className="relative h-screen flex items-center justify-center text-white bg-green-700 overflow-hidden">
+        {/* Latar Belakang Gambar/Video */}
         <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
+          src="/images/hero-bg.jpg" // Ganti dengan path gambar pertanian yang relevan
+          alt="Pertanian Modern"
+          layout="fill"
+          objectFit="cover"
+          quality={80}
+          className="absolute inset-0 z-0 opacity-70"
         />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+        <div className="absolute inset-0 bg-black opacity-40 z-0"></div> {/* Overlay gelap */}
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+        <div className="relative z-10 text-center p-8 max-w-4xl mx-auto">
+          <h1 className="text-4xl md:text-6xl font-extrabold leading-tight mb-4 animate-fade-in-up">
+            Panen Pengetahuan, Tumbuhkan Masa Depan
+          </h1>
+          <p className="text-lg md:text-xl mb-8 animate-fade-in-up delay-200">
+            Platform e-learning interaktif untuk memberdayakan petani muda hingga berpengalaman dengan ilmu dan teknologi terbaru di bidang ketahanan pangan.
+          </p>
+          <Link href="/login" passHref>
+            <button className="bg-yellow-500 hover:bg-yellow-600 text-green-900 font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 transform hover:scale-105 animate-fade-in-up delay-400">
+              Mulai Belajar Gratis
+            </button>
+          </Link>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </section>
+
+      {/* Why Us Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-6 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-10 text-green-800">Kenapa Memilih "Panen Pengetahuan"?</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="p-6 rounded-lg shadow-md bg-gray-50 hover:shadow-xl transition-shadow duration-300">
+              <div className="text-5xl text-green-600 mb-4">🌱</div>
+              <h3 className="text-xl font-semibold mb-2">Inovasi Pertanian</h3>
+              <p className="text-gray-600">Pelajari teknik bercocok tanam modern, pengelolaan hama terpadu, hingga penggunaan sensor pintar.</p>
+            </div>
+            <div className="p-6 rounded-lg shadow-md bg-gray-50 hover:shadow-xl transition-shadow duration-300">
+              <div className="text-5xl text-yellow-600 mb-4">🤝</div>
+              <h3 className="text-xl font-semibold mb-2">Komunitas Aktif</h3>
+              <p className="text-gray-600">Terhubung dengan ribuan petani lain, berbagi pengalaman, dan saling membantu memecahkan masalah.</p>
+            </div>
+            <div className="p-6 rounded-lg shadow-md bg-gray-50 hover:shadow-xl transition-shadow duration-300">
+              <div className="text-5xl text-blue-600 mb-4">📱</div>
+              <h3 className="text-xl font-semibold mb-2">Akses Mudah & Fleksibel</h3>
+              <p className="text-gray-600">Belajar kapan saja, di mana saja, melalui smartphone, tablet, atau komputer Anda.</p>
+            </div>
+            <div className="p-6 rounded-lg shadow-md bg-gray-50 hover:shadow-xl transition-shadow duration-300">
+              <div className="text-5xl text-red-600 mb-4">🌾</div>
+              <h3 className="text-xl font-semibold mb-2">Masa Depan Pangan</h3>
+              <p className="text-gray-600">Siapkan diri Anda untuk tantangan global ketahanan pangan dengan ilmu yang relevan.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Courses Section */}
+      <section className="py-16 bg-gray-100">
+        <div className="container mx-auto px-6 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-10 text-green-800">Kursus Pilihan Kami</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Contoh Kursus 1 */}
+            <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+              <Image src="/images/course-irigasi.jpg" alt="Irigasi Pintar" width={400} height={250} layout="responsive" objectFit="cover" />
+              <div className="p-6 text-left">
+                <h3 className="text-xl font-semibold text-gray-700 mb-2">Sistem Irigasi Otomatis</h3>
+                <p className="text-gray-600 text-sm mb-4">Pelajari cara mengimplementasikan irigasi berbasis sensor untuk efisiensi air maksimal.</p>
+                <button className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-full text-sm">
+                  Lihat Kursus
+                </button>
+              </div>
+            </div>
+            {/* Contoh Kursus 2 */}
+            <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+              <Image src="/images/course-drone.jpg" alt="Drone Pertanian" width={400} height={250} layout="responsive" objectFit="cover" />
+              <div className="p-6 text-left">
+                <h3 className="text-xl font-semibold text-gray-700 mb-2">Penggunaan Drone untuk Pemantauan Lahan</h3>
+                <p className="text-gray-600 text-sm mb-4">Optimalkan pemantauan kesehatan tanaman dan prediksi panen dengan teknologi drone.</p>
+                <button className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-full text-sm">
+                  Lihat Kursus
+                </button>
+              </div>
+            </div>
+            {/* Contoh Kursus 3 */}
+            <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+              <Image src="/images/course-marketing.jpg" alt="Pemasaran Digital" width={400} height={250} layout="responsive" objectFit="cover" />
+              <div className="p-6 text-left">
+                <h3 className="text-xl font-semibold text-gray-700 mb-2">Pemasaran Hasil Panen Digital</h3>
+                <p className="text-gray-600 text-sm mb-4">Tingkatkan jangkauan pasar Anda dengan strategi pemasaran online yang efektif.</p>
+                <button className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-full text-sm">
+                  Lihat Kursus
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonial Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-6 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-10 text-green-800">Apa Kata Mereka?</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+            <div className="bg-green-50 p-6 rounded-lg shadow-md">
+              <p className="italic text-gray-700 mb-4">"Sejak bergabung, saya jadi lebih percaya diri menggunakan teknologi. Panen saya meningkat, dan saya bisa menjual produk lebih luas!"</p>
+              <p className="font-semibold text-green-700">- Bapak Budi, Petani Muda, Jawa Timur</p>
+            </div>
+            <div className="bg-green-50 p-6 rounded-lg shadow-md">
+              <p className="italic text-gray-700 mb-4">"Saya tidak menyangka belajar teknologi semudah ini. Materi disampaikan dengan bahasa yang ramah dan mudah dipahami, bahkan untuk orang tua seperti saya."</p>
+              <p className="font-semibold text-green-700">- Ibu Siti, Petani Berpengalaman, Sumatera Barat</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA Section */}
+      <section className="py-16 bg-green-700 text-white text-center">
+        <div className="container mx-auto px-6">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">Siap Mengembangkan Pertanian Anda?</h2>
+          <p className="text-lg mb-8">Bergabunglah dengan komunitas "Panen Pengetahuan" hari ini dan mulailah perjalanan Anda menuju pertanian yang lebih cerdas dan berkelanjutan!</p>
+          <Link href="/login" passHref>
+            <button className="bg-yellow-500 hover:bg-yellow-600 text-green-900 font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 transform hover:scale-105">
+              Daftar Sekarang
+            </button>
+          </Link>
+        </div>
+      </section>
     </div>
   );
 }
