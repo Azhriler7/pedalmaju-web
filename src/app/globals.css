@@ -26,7 +26,6 @@
   --font-mono: var(--font-geist-mono);
 }
 
-/* Keep the same palette even when the OS prefers a dark theme */
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #ffffff;
@@ -45,4 +44,5 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  scroll-behavior: smooth;
 }
