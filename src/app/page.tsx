@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Button from "@/components/ui/Button";
+import NavBar from "@/components/ui/NavBar";
 
 const landingSections = [
   { id: "beranda", label: "Beranda" },
@@ -74,7 +75,9 @@ const communityHighlights = [
 
 export default function Home() {
   return (
-    <main className="mx-auto flex w-full flex-col">
+    <>
+      <NavBar variant="landing" />
+      <main className="mx-auto flex w-full flex-col pt-20">
       <section
         id="beranda"
         className="flex min-h-screen w-full items-center justify-center bg-gradient-to-b from-background via-background to-background/80 px-6 py-24"
@@ -93,10 +96,9 @@ export default function Home() {
             </p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row">
-            <Button href="/articles" intent="primary">
+            <Button href="/login" intent="primary">
               Mulai Belajar
             </Button>
-            <Button href="/login">Masuk / Daftar</Button>
           </div>
         </div>
       </section>
@@ -258,6 +260,7 @@ export default function Home() {
           </div>
         </div>
       </footer>
-    </main>
+      </main>
+    </>
   );
 }
