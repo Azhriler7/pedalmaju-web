@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import { User } from '@/types';
 import { useAuth } from '@/hooks/useAuth';
 import { updateUserProfile } from '../services/UserService';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
-import { Camera, MapPin, Calendar, User as UserIcon, Edit2, X, Check } from 'lucide-react';
+import { Camera, Calendar, User as UserIcon, Edit2, X, Check, Shield, Mail } from 'lucide-react';
 
 interface ProfileViewProps {
   initialUser: User;
@@ -28,6 +28,7 @@ export default function ProfileView({ initialUser }: ProfileViewProps) {
   const [bio, setBio] = useState(profile.bio || '');
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [previewPhoto, setPreviewPhoto] = useState(profile.photoURL);
+  const objectUrlRef = useRef<string | null>(null);
 
   // Logic: Apakah user yang login === pemilik profil ini?
   const isOwnProfile = currentUser?.uid === profile.uid;
@@ -37,8 +38,12 @@ export default function ProfileView({ initialUser }: ProfileViewProps) {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       setPhotoFile(file);
-      // Buat preview lokal biar user bisa lihat sebelum simpan
-      setPreviewPhoto(URL.createObjectURL(file));
+      if (objectUrlRef.current) {
+        URL.revokeObjectURL(objectUrlRef.current);
+      }
+      const nextPreview = URL.createObjectURL(file);
+      objectUrlRef.current = nextPreview;
+      setPreviewPhoto(nextPreview);
     }
   };
 
@@ -78,6 +83,25 @@ export default function ProfileView({ initialUser }: ProfileViewProps) {
     setPreviewPhoto(profile.photoURL);
     setPhotoFile(null);
   };
+
+  useEffect(() => {
+    return () => {
+      if (objectUrlRef.current) {
+        URL.revokeObjectURL(objectUrlRef.current);
+      }
+    };
+  }, []);
+
+  const joinedAtLabel = useMemo(() => {
+    try {
+      return new Intl.DateTimeFormat('id-ID', {
+        month: 'long',
+        year: 'numeric',
+      }).format(new Date(profile.createdAt));
+    } catch {
+      return '-';
+    }
+  }, [profile.createdAt]);
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
@@ -201,12 +225,16 @@ export default function ProfileView({ initialUser }: ProfileViewProps) {
           {/* Metadata Tambahan (Statis) */}
           <div className="flex flex-wrap gap-6 text-sm text-gray-500">
             <div className="flex items-center gap-2">
-              <Calendar size={16} className="text-green-600" />
-              <span>Bergabung sejak {new Date(profile.createdAt).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}</span>
+              <Mail size={16} className="text-green-600" />
+              <span>{profile.email}</span>
             </div>
             <div className="flex items-center gap-2">
-              <MapPin size={16} className="text-green-600" />
-              <span>Indonesia</span>
+              <Shield size={16} className="text-green-600" />
+              <span>{profile.role === 'admin' ? 'Administrator komunitas' : 'Anggota komunitas'}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Calendar size={16} className="text-green-600" />
+              <span>Bergabung sejak {joinedAtLabel}</span>
             </div>
           </div>
         </div>

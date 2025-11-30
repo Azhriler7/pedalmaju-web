@@ -17,6 +17,7 @@ interface PostCardProps {
 	isVotePending?: boolean;
 	currentUserId?: string;
 	isAdminView?: boolean;
+	isAdmin?: boolean;
 	onDelete?: (postId: string) => void;
 	hideDetailLink?: boolean;
 	onTagClick?: (tag: string) => void;
@@ -34,11 +35,6 @@ const formatTimestamp = (timestamp: number) => {
 	}
 };
 
-const avatarFallback = (name: string): string => {
-	if (!name) return "U";
-	return name.trim().charAt(0).toUpperCase();
-};
-
 export const PostCard: React.FC<PostCardProps> = ({
 	post,
 	currentVote = null,
@@ -47,6 +43,7 @@ export const PostCard: React.FC<PostCardProps> = ({
 	isVotePending = false,
 	currentUserId,
 	isAdminView = false,
+	isAdmin = false,
 	onDelete,
 	hideDetailLink = false,
 	onTagClick,
@@ -58,7 +55,7 @@ export const PostCard: React.FC<PostCardProps> = ({
 	const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 	const actionMenuRef = useRef<HTMLDivElement | null>(null);
 
-	const canDelete = isAdminView || (!!currentUserId && currentUserId === post.authorId);
+	const canDelete = isAdmin || isAdminView || (!!currentUserId && currentUserId === post.authorId);
 
 	useEffect(() => {
 		if (!isActionMenuOpen) {
@@ -128,19 +125,13 @@ export const PostCard: React.FC<PostCardProps> = ({
 	return (
 		<article className="flex gap-4 border-b border-border/60 px-5 py-6 transition-colors hover:bg-muted/20">
 			<div className="relative mt-1 h-11 w-11 flex-shrink-0 overflow-hidden rounded-full border border-border/70 bg-muted/40">
-				{post.authorPhoto ? (
-					<Image
-						src={post.authorPhoto}
-						alt={post.authorName}
-						fill
-						sizes="48px"
-						className="rounded-full object-cover"
-					/>
-				) : (
-					<span className="flex h-full w-full items-center justify-center text-sm font-semibold text-foreground/80">
-						{avatarFallback(post.authorName)}
-					</span>
-				)}
+				<Image
+					src={post.authorPhoto || '/default-avatar.png'}
+					alt={post.authorName}
+					fill
+					sizes="48px"
+					className="rounded-full object-cover"
+				/>
 				{post.authorBadge === "admin" && (
 					<span className="absolute -bottom-1 -right-1 inline-flex items-center rounded-full bg-accent px-2 py-0.5 text-[10px] font-semibold uppercase text-white shadow-sm">
 						Admin
@@ -253,7 +244,7 @@ export const PostCard: React.FC<PostCardProps> = ({
 
 					{!hideDetailLink && (
 						<Link
-							href={`/forum/${post.id}`}
+							href={isAdminView ? `/admin/forum/${post.id}` : `/forum/${post.id}`}
 							className="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-semibold text-accent transition-colors hover:bg-accent/10"
 						>
 							Lihat Detail

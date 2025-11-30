@@ -12,45 +12,45 @@ const landingSections = [
 
 const solutionHighlights = [
   {
-    title: "Sensor Terhubung",
+    title: "Modul Belajar Terstruktur",
     description:
-      "Integrasi perangkat IoT untuk memantau kelembapan, suhu, dan nutrisi dari satu dashboard.",
+      "Ikuti kurikulum bertahap yang mengenalkan konsep dasar hingga penerapan teknologi IoT di pertanian.",
   },
   {
-    title: "Data Real-time",
+    title: "Pendampingan Mentor",
     description:
-      "Streaming data dari Firebase Realtime Database untuk keputusan cepat di lapangan.",
+      "Akses sesi tanya jawab langsung dengan praktisi yang berpengalaman mengimplementasikan IoT di lahan.",
   },
   {
-    title: "Automasi Respons",
+    title: "Simulasi Perangkat",
     description:
-      "Tetapkan otomatisasi irigasi atau peringatan WhatsApp berdasarkan ambang batas tertentu.",
+      "Pelajari cara membaca data sensor dan menyusun alur kerja otomatis melalui studi kasus dan walkthrough.",
   },
 ];
 
 const featureCards = [
   {
-    title: "Dashboard Monitoring",
+    title: "Kelas Interaktif",
     points: [
-      "Visualisasi sensor dan status perangkat terkini",
-      "Analitik historis untuk evaluasi panen",
-      "Pemberitahuan anomali langsung ke admin",
+      "Video, artikel, dan kuis untuk memahami IoT pertanian",
+      "Rangkuman materi yang mudah diunduh",
+      "Sertifikat kelulusan tiap modul",
     ],
   },
   {
-    title: "Manajemen Komunitas",
+    title: "Forum Komunitas",
     points: [
-      "Profiler anggota dan segmentasi role",
-      "Agenda event dan presensi digital",
-      "Integrasi dokumentasi media Cloudinary",
+      "Diskusi topik IoT bersama mentor dan petani",
+      "Berbagi pengalaman penggunaan teknologi",
+      "Kumpulan rekomendasi alat dan pemasok",
     ],
   },
   {
-    title: "Konten Edukasi",
+    title: "Perpustakaan Materi",
     points: [
-      "Artikel praktik terbaik berbasis pengalaman lapangan",
-      "Video tutorial YouTube terkurasi",
-      "Forum tanya jawab antar petani cerdas",
+      "Studi kasus keberhasilan implementasi IoT",
+      "Template rencana kerja digital",
+      "Checklist persiapan instalasi perangkat",
     ],
   },
 ];
@@ -59,19 +59,21 @@ const communityHighlights = [
   {
     title: "Forum Diskusi",
     description:
-      "Temukan jawaban teknis dari mentor dan sesama pengguna saat menghadapi tantangan di lahan.",
+      "Bertukar tips konfigurasi sensor, integrasi data, dan strategi adopsi teknologi bersama komunitas.",
   },
   {
     title: "Program Pendampingan",
     description:
-      "Ikuti sesi live untuk mempelajari kalibrasi sensor, analisis data, dan otomasi IoT.",
+      "Ikuti kelas live dan workshop rutin yang memandu langkah demi langkah penerapan IoT di lahan Anda.",
   },
   {
     title: "Cerita Sukses",
     description:
-      "Pelajari studi kasus penerapan IoT yang meningkatkan efisiensi hingga 40%.",
+      "Dengar langsung pengalaman petani yang berhasil mengoptimalkan produksi dengan teknologi.",
   },
 ];
+
+const currentYear = new Date().getFullYear();
 
 export default function Home() {
   return (
@@ -88,16 +90,19 @@ export default function Home() {
           </span>
           <div className="space-y-6">
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-              Edukasi IoT Pertanian untuk Petani Cerdas
+              E-Learning & Komunitas IoT Pertanian
             </h1>
             <p className="mx-auto max-w-2xl text-base text-foreground/80 sm:text-lg">
-              Bangun ekosistem pertanian presisi dengan perangkat IoT, data real-time dari Firebase,
-              dan dokumentasi Cloudinary. PedalMaju membantu petani mengambil keputusan berbasis data.
+              Kuasai teknologi IoT sebelum diterapkan di lahan. Pelajari konsep, pahami perangkat, dan diskusikan strategi
+              implementasi bersama mentor serta komunitas petani digital.
             </p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row">
             <Button href="/login" intent="primary">
-              Mulai Belajar
+              Masuk Ke Kelas
+            </Button>
+            <Button href="/register" intent="secondary">
+              Daftar Komunitas
             </Button>
           </div>
         </div>
@@ -113,12 +118,11 @@ export default function Home() {
               Solusi IoT
             </p>
             <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-              Monitoring terintegrasi dari sensor hingga tindakan lapangan
+              Bekal lengkap sebelum menerapkan perangkat di lapangan
             </h2>
             <p className="text-base text-foreground/70">
-              PedalMaju menghubungkan sensor dan perangkat lain melalui Firebase sehingga setiap data
-              dapat dianalisis dan ditindaklanjuti secara langsung. Tim memperoleh visibilitas penuh
-              terhadap kondisi tanam kapan saja.
+              PedalMaju memfasilitasi petani mempelajari dasar perangkat, cara membaca data, dan alur kerja digital melalui materi teoritis
+              dan praktik ringan. Semua disusun agar proses adopsi teknologi berlangsung terarah dan efisien.
             </p>
           </div>
           <div className="space-y-4">
@@ -145,11 +149,11 @@ export default function Home() {
               Fitur Unggulan
             </p>
             <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-              Satu platform untuk operasional dan edukasi pertanian
+              Satu platform untuk belajar dan berkolaborasi
             </h2>
             <p className="mx-auto max-w-3xl text-base text-foreground/70">
-              Dari dashboard monitoring, modul komunitas, hingga konten pembelajaran, semuanya dirancang
-              untuk meningkatkan produktivitas dan kolaborasi petani.
+              Materi multimedia, forum aktif, dan bank referensi dirancang untuk membantu petani memahami teknologi serta
+              membangun jejaring sebelum menerapkan IoT secara penuh.
             </p>
           </div>
           <div className="grid gap-6 md:grid-cols-3">
@@ -183,11 +187,11 @@ export default function Home() {
               Komunitas
             </p>
             <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-              Kolaborasi lintas komunitas untuk pertanian berkelanjutan
+              Belajar bersama komunitas petani berbasis teknologi
             </h2>
             <p className="text-base text-foreground/70">
-              PedalMaju membangun jembatan antara mentor, petani muda, dan praktisi IoT. Bergabunglah
-              untuk saling bertukar ide, berbagi dokumentasi lapangan, dan menginisiasi program dampak.
+              PedalMaju mempertemukan mentor, petani modern, dan pegiat teknologi untuk saling berbagi pengetahuan.
+              Ikuti diskusi rutin, dapatkan referensi perangkat, dan temukan dukungan ketika mulai mengadopsi IoT.
             </p>
           </div>
           <div className="flex-1 space-y-4">
@@ -204,59 +208,63 @@ export default function Home() {
         </div>
       </section>
 
-      <footer
-        id="kontak"
-        className="flex min-h-screen w-full items-center bg-muted/20 px-6 py-24"
-      >
-        <div className="mx-auto grid w-full max-w-5xl gap-10 rounded-3xl border border-border bg-background/95 p-10 shadow-sm dark:border-white/10 md:grid-cols-2">
-          <div className="space-y-4">
-            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-foreground/60">
-              Kontak
-            </p>
-            <h2 className="text-3xl font-semibold tracking-tight">Tetap terhubung dengan tim PedalMaju</h2>
-            <p className="text-base text-foreground/70">
-              Hubungi kami untuk demo produk, kolaborasi komunitas, atau pertanyaan seputar implementasi
-              IoT di sektor pertanian.
-            </p>
-            <div className="space-y-2 text-sm text-foreground/80">
-              <p>Email: <a className="font-medium text-foreground underline" href="mailto:halo@pedalmaju.id">halo@pedalmaju.id</a></p>
-              <p>WhatsApp: <a className="font-medium text-foreground underline" href="https://wa.me/6281234567890" target="_blank" rel="noreferrer">+62 812-3456-7890</a></p>
-              <p>Lokasi: Bandung, Jawa Barat</p>
+      <footer id="kontak" className="w-full bg-foreground text-background">
+        <div className="mx-auto w-full max-w-6xl px-6 py-16 md:py-20">
+          <div className="grid gap-12 md:grid-cols-[1.3fr_1fr]">
+            <div className="space-y-6">
+              <p className="text-xs font-semibold uppercase tracking-[0.32em] text-background/60">
+                Kontak
+              </p>
+              <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
+                Terhubung dengan tim PedalMaju
+              </h2>
+              <p className="text-base text-background/70">
+                Ada ide kelas, ingin mengundang mentor, atau butuh dukungan implementasi IoT? Sampaikan kebutuhan Anda
+                dan kami bantu merancang jalur pembelajaran yang tepat.
+              </p>
+              <div className="space-y-2 text-sm">
+                <p>Email: <a className="font-medium underline" href="mailto:halo@pedalmaju.id">halo@pedalmaju.id</a></p>
+                <p>WhatsApp: <a className="font-medium underline" href="https://wa.me/6281234567890" target="_blank" rel="noreferrer">+62 812-3456-7890</a></p>
+                <p>Lokasi: Bandung, Jawa Barat</p>
+              </div>
+            </div>
+            <div className="grid gap-8 text-sm sm:grid-cols-2">
+              <div>
+                <h3 className="text-base font-semibold">Navigasi</h3>
+                <ul className="mt-3 space-y-2 text-background/70">
+                  {landingSections.map((section) => (
+                    <li key={section.id}>
+                      <Link className="transition hover:text-background" href={`/#${section.id}`}>
+                        {section.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h3 className="text-base font-semibold">Sosial</h3>
+                <ul className="mt-3 space-y-2 text-background/70">
+                  <li>
+                    <a className="transition hover:text-background" href="https://instagram.com/pedalmaju" rel="noreferrer" target="_blank">
+                      Instagram
+                    </a>
+                  </li>
+                  <li>
+                    <a className="transition hover:text-background" href="https://youtube.com/@pedalmaju" rel="noreferrer" target="_blank">
+                      YouTube
+                    </a>
+                  </li>
+                  <li>
+                    <a className="transition hover:text-background" href="https://linkedin.com/company/pedalmaju" rel="noreferrer" target="_blank">
+                      LinkedIn
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
-          <div className="grid gap-6 text-sm text-foreground/70 sm:grid-cols-2">
-            <div>
-              <h3 className="text-base font-semibold text-foreground">Navigasi</h3>
-              <ul className="mt-3 space-y-2">
-                {landingSections.map((section) => (
-                  <li key={section.id}>
-                    <Link className="hover:text-foreground" href={`/#${section.id}`}>
-                      {section.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-base font-semibold text-foreground">Sosial</h3>
-              <ul className="mt-3 space-y-2">
-                <li>
-                  <a className="hover:text-foreground" href="https://instagram.com/pedalmaju" rel="noreferrer" target="_blank">
-                    Instagram
-                  </a>
-                </li>
-                <li>
-                  <a className="hover:text-foreground" href="https://youtube.com/@pedalmaju" rel="noreferrer" target="_blank">
-                    YouTube
-                  </a>
-                </li>
-                <li>
-                  <a className="hover:text-foreground" href="https://linkedin.com/company/pedalmaju" rel="noreferrer" target="_blank">
-                    LinkedIn
-                  </a>
-                </li>
-              </ul>
-            </div>
+          <div className="mt-12 border-t border-white/10 pt-6 text-xs text-background/50">
+            © {currentYear} PedalMaju. Semua hak cipta dilindungi.
           </div>
         </div>
       </footer>

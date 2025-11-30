@@ -9,7 +9,7 @@ import { Bell, CheckCheck, ArrowLeft } from 'lucide-react';
 import Spinner from '@/components/ui/Spinner';
 import Link from 'next/link';
 
-export default function NotificationsPage() {
+export default function AdminNotificationsPage() {
   const { user } = useAuth();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
@@ -64,11 +64,11 @@ export default function NotificationsPage() {
       {/* Back Button */}
       <div className="px-4 pb-4">
         <Link
-          href="/forum"
+          href="/admin/forum"
           className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
         >
           <ArrowLeft size={16} />
-          Kembali ke Forum
+          Kembali ke Forum Admin
         </Link>
       </div>
 
@@ -100,19 +100,19 @@ export default function NotificationsPage() {
       <div className="sticky top-16 z-10 border-b border-gray-100 bg-white/90 px-4 pb-4 backdrop-blur">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-start gap-3">
-            <span className="rounded-full bg-green-100 p-2 text-green-600">
+            <span className="rounded-full bg-blue-100 p-2 text-blue-600">
               <Bell size={18} />
             </span>
             <div>
-              <h1 className="text-xl font-bold text-gray-900">Notifikasi User</h1>
-              <p className="text-sm text-gray-500">Pantau interaksi terbaru dari komunitas dan materi Anda.</p>
+              <h1 className="text-xl font-bold text-gray-900">Notifikasi Admin</h1>
+              <p className="text-sm text-gray-500">Pantau interaksi terbaru dari komunitas dan materi dalam sistem.</p>
             </div>
           </div>
 
           {notifications.some(n => !n.isRead) && (
             <button
               onClick={handleMarkAllRead}
-              className="text-xs inline-flex items-center gap-1 self-start rounded-full border border-green-200 px-3 py-1 font-semibold uppercase tracking-[0.24em] text-green-600 transition hover:border-green-300 hover:text-green-700 sm:self-auto"
+              className="text-xs inline-flex items-center gap-1 self-start rounded-full border border-blue-200 px-3 py-1 font-semibold uppercase tracking-[0.24em] text-blue-600 transition hover:border-blue-300 hover:text-blue-700 sm:self-auto"
             >
               <CheckCheck size={14} />
               Tandai semua dibaca

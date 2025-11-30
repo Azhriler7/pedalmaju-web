@@ -3,8 +3,8 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image'; // 1. Import Image
-import { ContentBlock } from '@/types';
-import { createMaterial } from '../services/MaterialService';
+import { ContentBlock, Material } from '@/types';
+import { createMaterial, updateMaterial } from '../services/MaterialService';
 import { uploadToCloudinary } from '@/lib/cloudinary'; 
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
@@ -15,13 +15,22 @@ type FormBlock = ContentBlock & {
   previewUrl?: string;     
 };
 
-export default function MaterialForm() {
+type MaterialFormProps = {
+  material?: Material;
+  isEdit?: boolean;
+};
+
+export default function MaterialForm({ material, isEdit = false }: MaterialFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState(material?.title || '');
   const [thumbnail, setThumbnail] = useState<File | null>(null);
-  const [blocks, setBlocks] = useState<FormBlock[]>([]);
+  const [blocks, setBlocks] = useState<FormBlock[]>(material ? material.contentBlocks.map(block => ({
+    ...block,
+    file: null,
+    previewUrl: block.type === 'image' ? block.value : ''
+  })) : []);
 
   // Add block
   const addBlock = (type: 'text' | 'video' | 'image') => {
@@ -53,7 +62,8 @@ export default function MaterialForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!thumbnail) return alert("Thumbnail wajib diupload!");
+    if (!title.trim()) return alert("Judul materi wajib diisi!");
+    if (isEdit && !material) return alert("Data materi tidak valid!");
     
     setLoading(true);
     try {
@@ -67,7 +77,12 @@ export default function MaterialForm() {
         })
       );
 
-      await createMaterial(title, thumbnail, processedBlocks);
+      if (isEdit && material) {
+        await updateMaterial(material.id, title, thumbnail, processedBlocks, material.thumbnailUrl);
+      } else {
+        if (!thumbnail) return alert("Thumbnail wajib diupload!");
+        await createMaterial(title, thumbnail, processedBlocks);
+      }
       router.push('/admin/materials');
     } catch (error) {
       console.error(error);
@@ -91,12 +106,27 @@ export default function MaterialForm() {
         />
         <div>
           <label className="block text-sm font-medium mb-1 text-gray-700">Cover Thumbnail</label>
+          {isEdit && material?.thumbnailUrl && !thumbnail && (
+            <div className="mb-2">
+              <Image
+                src={material.thumbnailUrl}
+                alt="Current thumbnail"
+                width={200}
+                height={120}
+                className="rounded-lg object-cover"
+              />
+              <p className="text-xs text-gray-500 mt-1">Thumbnail saat ini</p>
+            </div>
+          )}
           <input 
             type="file" 
             accept="image/*"
             onChange={e => e.target.files && setThumbnail(e.target.files[0])}
             className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
           />
+          {thumbnail && (
+            <p className="text-xs text-green-600 mt-1">Thumbnail baru akan diupload</p>
+          )}
         </div>
       </div>
 
