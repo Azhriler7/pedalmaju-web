@@ -1,85 +1,107 @@
-PEDAL MAJU WEB E-LEARNING
+# PEDALMAJU WEB E-LEARNING
 
-DIBUAT OLEH:
-1. Adim Agus Sugianto
-2. Ali Nasruloh Budiman 
-3. Arya Agung Triadi
-4. Azhriler Lintang
-5. Muhammad Zidan Heiqmatyar
+Platform e-learning komunitas pertanian cerdas yang menggabungkan materi terkurasi, forum diskusi, serta pengelolaan konten oleh admin. Proyek ini dibangun menggunakan Next.js dengan backend Firebase dan penyimpanan media pada Cloudinary.
 
-Tech: 
-Next Js as Front-End
-Firebase as Back-End
-Cloudinary as Image Database 
-Youtube as Video Database 
+## Tim Pengembang
 
-Panduan Setup dan Workflow Git
+- Adim Agus Sugianto
+- Ali Nasruloh Budiman
+- Arya Agung Triadi
+- Azhriler Lintang
+- Muhammad Zidan Heiqmatyar
 
-Dokumen ini berisi langkah-langkah untuk clone, setup environment (Firebase & Cloudinary), update, dan push code.
+## Teknologi Utama
 
-1. Clone & Instalasi Awal
+- Next.js 15 (App Router) sebagai front-end framework
+- TypeScript untuk type-safety
+- Firebase (Auth, Firestore, Storage) sebagai backend
+- Cloudinary untuk manajemen gambar
+- YouTube embed sebagai sumber video pembelajaran
 
-Lakukan ini hanya saat pertama kali mengambil projek.
+## Prasyarat
 
-# Clone repository (ganti URL dengan link repo teman)
-git clone https://github.com/Azhriler7/pedalmaju-web.git
+- Node.js 18+ dan npm terbaru
+- Akun Firebase dengan akses ke Firestore & Authentication
+- Akun Cloudinary untuk penyimpanan media
+- Git untuk manajemen versi
 
-# Masuk ke folder projek
-cd nama-repo
+## Memulai Proyek
 
-# Install dependencies
-npm install
+1. Clone repository:
+   ```bash
+   git clone https://github.com/Azhriler7/pedalmaju-web.git
+   cd pedalmaju-web
+   ```
+2. Instal dependensi:
+   ```bash
+   npm install
+   ```
+3. Buat file environment `./.env.local` berdasarkan variabel yang dibutuhkan (minta kredensial pada pemilik repo) dan isi contoh berikut:
+   ```bash
+   NEXT_PUBLIC_FIREBASE_API_KEY=...
+   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=...
+   NEXT_PUBLIC_FIREBASE_PROJECT_ID=...
+   NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=...
+   NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=...
+   NEXT_PUBLIC_FIREBASE_APP_ID=...
+   CLOUDINARY_UPLOAD_PRESET=...
+   CLOUDINARY_CLOUD_NAME=...
+   CLOUDINARY_API_KEY=...
+   CLOUDINARY_API_SECRET=...
+   ```
 
+## Menjalankan Aplikasi
 
-2. Setup Environment Variables
+- Mode pengembangan: `npm run dev`
+- Akses lokal: http://localhost:3000
 
-Projek ini menggunakan Firebase dan Cloudinary. File .env tidak ikut ter-upload ke git, jadi harus dibuat manual.
+## Skrip NPM
 
-Buat file bernama .env.local di root folder.
+- `npm run dev` – menjalankan server development
+- `npm run build` – membuat bundel produksi Next.js
+- `npm start` – menjalankan bundel produksi
+- `npm run lint` – menjalankan linting
 
-Minta isi value key kepada pemilik repo.
+## Struktur Proyek (Ringkas)
 
-3. Menjalankan Projek
+```
+src/
+  app/           # Halaman dengan App Router
+  components/    # Komponen UI reusable
+  features/      # Modul domain (auth, forum, materials, dll)
+  lib/           # Utility dan konfigurasi pihak ketiga
+  types/         # Definisi TypeScript global
+public/          # Aset statis
+```
 
-Pastikan dependensi sudah terinstall dan .env.local sudah dibuat.
+## Alur Git yang Disarankan
 
-# Jalankan server development
-npm run dev
+### Mengambil Perubahan Terbaru
 
-
-Akses di: http://localhost:3000
-
-4. Cara Pull (Ambil Update Teman)
-
-Lakukan ini sebelum mulai coding untuk memastikan kodemu sinkron dengan repo utama.
-
-# Pindah ke branch utama
+```bash
 git checkout main
-
-# Tarik data terbaru
 git pull origin main
+```
 
+### Membuat Fitur Baru
 
-5. Cara Push (Kirim Fitur Baru)
-
-Gunakan branch baru untuk setiap fitur agar tidak merusak branch utama.
-
-# 1. Buat dan masuk ke branch baru
+```bash
 git checkout -b nama-fitur-baru
-
-# --- Lakukan coding di sini ---
-
-# 2. Cek status file (Opsional)
-git status
-
-# 3. Masukkan file ke staging
+# ... lakukan perubahan kode ...
 git add .
-
-# 4. Simpan perubahan (Commit)
-git commit -m "Menambahkan fitur X"
-
-# 5. Upload ke GitHub (Push)
+git commit -m "Deskripsi singkat perubahan"
 git push -u origin nama-fitur-baru
+```
 
+Setelah push, buat Pull Request melalui GitHub untuk review sebelum merge.
 
-Setelah langkah ke-5, buka GitHub di browser dan buat Pull Request (PR).
+## Tips Kontribusi
+
+- Selalu perbarui branch sebelum mulai mengerjakan fitur
+- Gunakan commit message yang jelas dan konsisten
+- Sertakan screenshot/gif pada PR untuk perubahan UI
+- Pastikan linting dan build berjalan tanpa error sebelum mengajukan PR
+
+## Lisensi
+
+Proyek ini dikembangkan untuk kebutuhan internal tim PedalMaju. Hubungi pemilik repo untuk informasi lebih lanjut mengenai penggunaan kode sumber.
