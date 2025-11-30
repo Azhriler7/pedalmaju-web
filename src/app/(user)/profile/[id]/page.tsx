@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { ArrowLeft, Award, BookOpen, MessageCircle, Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import ProfileView from "@/features/users/components/ProfileView";
 import { getUserProfile } from "@/features/users/services/UserService";
 import Button from "@/components/ui/Button";
@@ -20,11 +20,6 @@ const communityHighlights = [
     description: "Ikuti modul-modul terbaru untuk mempertajam keterampilan pertanian cerdas.",
     href: "/materials",
   },
-  {
-    title: "Cerita Dampak",
-    description: "Pelajari studi kasus keberhasilan penerapan IoT di berbagai daerah.",
-    href: "/dashboard",
-  },
 ];
 
 export default function UserProfile() {
@@ -32,6 +27,10 @@ export default function UserProfile() {
   const [profile, setProfile] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const joinDateLabel = profile
+    ? new Intl.DateTimeFormat("id-ID", { dateStyle: "medium" }).format(new Date(profile.createdAt))
+    : null;
 
   useEffect(() => {
     let isActive = true;
@@ -70,64 +69,49 @@ export default function UserProfile() {
     };
   }, [profileId]);
 
-  const quickStats = useMemo(() => {
-    return [
-      {
-        label: profile?.role === "admin" ? "Peran" : "Anggota",
-        value: profile?.role === "admin" ? "Admin Komunitas" : "Petani Cerdas",
-        icon: Award,
-      },
-      {
-        label: "Materi Diikuti",
-        value: "Terus berkembang",
-        icon: BookOpen,
-      },
-      {
-        label: "Forum",
-        value: "Aktif berdiskusi",
-        icon: MessageCircle,
-      },
-    ];
-  }, [profile?.role]);
-
   return (
     <main className="mx-auto flex w-full flex-col px-6 pb-12">
       <div className="mx-auto w-full max-w-6xl space-y-10">
         <section className="overflow-hidden rounded-3xl border border-border bg-gradient-to-r from-accent/12 via-accent/6 to-transparent p-8 shadow-sm">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-            <div className="space-y-4">
-              <Link
-                href="/dashboard"
-                className="inline-flex items-center gap-2 text-sm text-foreground/60 transition hover:text-foreground"
-              >
-                <ArrowLeft size={16} />
-                Kembali ke dashboard
-              </Link>
-              <div className="space-y-3">
-                <span className="inline-flex items-center rounded-full border border-accent/30 px-4 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-foreground/60">
-                  Profil Komunitas
-                </span>
-                <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-                  Kenali lebih dekat perjalanan belajar Anda
-                </h1>
-                <p className="max-w-2xl text-sm text-foreground/70 sm:text-base">
-                  Sinkronkan identitas Anda di komunitas PedalMaju, perbarui biodata, dan pantau kontribusi yang terus berkembang.
-                </p>
-              </div>
+          <div className="space-y-6">
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center gap-2 text-sm text-foreground/60 transition hover:text-foreground"
+            >
+              <ArrowLeft size={16} />
+              Kembali ke dashboard
+            </Link>
+            <div className="space-y-3">
+              <span className="inline-flex items-center rounded-full border border-accent/30 px-4 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-foreground/60">
+                Profil Komunitas
+              </span>
+              <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
+                Kelola identitas Anda dan terus terhubung dengan komunitas PedalMaju.
+              </h1>
+              <p className="max-w-2xl text-sm text-foreground/70 sm:text-base">
+                Perbarui biodata, foto, dan informasi akun agar kontribusi Anda di forum serta kelas tercatat dengan baik.
+              </p>
             </div>
-            <div className="grid gap-4 rounded-2xl border border-border bg-background/90 p-5 shadow-inner sm:grid-cols-3">
-              {quickStats.map((stat) => (
-                <div key={stat.label} className="flex flex-col gap-2">
-                  <div className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-accent/15 text-accent">
-                    <stat.icon size={18} />
-                  </div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.25em] text-foreground/50">
-                    {stat.label}
+            {profile && !loading && (
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <article className="rounded-2xl border border-border/60 bg-background/90 p-4 shadow-sm">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-foreground/50">Peran</p>
+                  <p className="mt-2 text-sm font-semibold text-foreground">
+                    {profile.role === "admin" ? "Admin komunitas" : "Anggota komunitas"}
                   </p>
-                  <p className="text-sm font-semibold text-foreground/80">{stat.value}</p>
-                </div>
-              ))}
-            </div>
+                </article>
+                <article className="rounded-2xl border border-border/60 bg-background/90 p-4 shadow-sm">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-foreground/50">Alamat Email</p>
+                  <p className="mt-2 text-sm font-semibold text-foreground">{profile.email}</p>
+                </article>
+                {joinDateLabel && (
+                  <article className="rounded-2xl border border-border/60 bg-background/90 p-4 shadow-sm">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-foreground/50">Bergabung</p>
+                    <p className="mt-2 text-sm font-semibold text-foreground">{joinDateLabel}</p>
+                  </article>
+                )}
+              </div>
+            )}
           </div>
         </section>
 

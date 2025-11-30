@@ -19,7 +19,7 @@ interface PageProps {
 }
 
 const fallbackAvatar =
-  'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=160&q=80';
+  '/default-avatar.png';
 
 const resolveAvatar = (photoUrl: string | null | undefined, fallback: string): string => {
   if (typeof photoUrl === 'string') {
@@ -61,6 +61,7 @@ export default function UserForumPost({ params }: PageProps) {
   const composerRef = useRef<HTMLDivElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
+  // Subscribe Post Data
   useEffect(() => {
     setIsPostLoading(true);
     const unsubscribe = ForumService.subscribeToPost(postId, (nextPost) => {
@@ -71,6 +72,7 @@ export default function UserForumPost({ params }: PageProps) {
     return () => unsubscribe();
   }, [postId]);
 
+  // Subscribe Comments Data
   useEffect(() => {
     const unsubscribe = ForumService.subscribeToComments(postId, (nextComments) => {
       setComments(nextComments);
@@ -79,6 +81,7 @@ export default function UserForumPost({ params }: PageProps) {
     return () => unsubscribe();
   }, [postId]);
 
+  // Load User Vote for Post
   useEffect(() => {
     if (!user || !post) {
       setPostVote(null);
@@ -105,6 +108,7 @@ export default function UserForumPost({ params }: PageProps) {
     };
   }, [user, post]);
 
+  // Load User Votes for Comments
   useEffect(() => {
     if (!user) {
       setCommentVotes({});
@@ -142,6 +146,7 @@ export default function UserForumPost({ params }: PageProps) {
     };
   }, [comments, user, postId]);
 
+  // Auth Redirect
   useEffect(() => {
     if (!loading && !user) {
       router.push('/login');
@@ -154,6 +159,7 @@ export default function UserForumPost({ params }: PageProps) {
     textareaRef.current?.focus();
   };
 
+  // --- PERBAIKAN UTAMA DI SINI (Handle Post Vote) ---
   const handlePostVote = async (postIdValue: string, type: VoteType['type']) => {
     if (!user) {
       router.push('/login');
@@ -164,7 +170,15 @@ export default function UserForumPost({ params }: PageProps) {
     setErrorMessage(null);
 
     try {
-      const nextVote = await ForumService.togglePostVote(postIdValue, user.uid, type);
+      // Create Actor Object
+      const actor = {
+        uid: user.uid,
+        displayName: user.displayName || 'Pengguna',
+        photoURL: user.photoURL || ''
+      };
+
+      // Kirim actor object, bukan string user.uid
+      const nextVote = await ForumService.togglePostVote(postIdValue, actor, type);
       setPostVote(nextVote);
     } catch (error) {
       console.error('Failed to vote post', error);
@@ -174,6 +188,7 @@ export default function UserForumPost({ params }: PageProps) {
     }
   };
 
+  // --- PERBAIKAN UTAMA DI SINI (Handle Comment Vote) ---
   const handleCommentVote = async (commentId: string, type: VoteType['type']) => {
     if (!user) {
       router.push('/login');
@@ -188,7 +203,16 @@ export default function UserForumPost({ params }: PageProps) {
     setErrorMessage(null);
 
     try {
-      const nextVote = await ForumService.toggleCommentVote(postId, commentId, user.uid, type);
+      // Create Actor Object
+      const actor = {
+        uid: user.uid,
+        displayName: user.displayName || 'Pengguna',
+        photoURL: user.photoURL || ''
+      };
+
+      // Kirim actor object, bukan string user.uid
+      const nextVote = await ForumService.toggleCommentVote(postId, commentId, actor, type);
+      
       setCommentVotes((prev) => ({
         ...prev,
         [commentId]: nextVote,
@@ -303,6 +327,7 @@ export default function UserForumPost({ params }: PageProps) {
             isVotePending={isPostVotePending}
             currentUserId={user?.uid}
             isAdminView={isAdminView}
+            isAdmin={user?.role === 'admin'}
             onDelete={handlePostDeleted}
             hideDetailLink
           />

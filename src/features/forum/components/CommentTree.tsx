@@ -72,10 +72,9 @@ const CommentBubble: React.FC<{
 			<div className="relative h-10 w-10 flex-shrink-0 rounded-full border border-border/70 bg-muted/30">
 				{comment.authorPhoto ? (
 					<Image
-						src={comment.authorPhoto}
+						src={comment.authorPhoto || '/default-avatar.png'}
 						alt={comment.authorName}
 						fill
-						sizes="40px"
 						className="rounded-full object-cover"
 					/>
 				) : (

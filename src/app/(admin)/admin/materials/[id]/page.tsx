@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useParams } from "next/navigation";
-import { ArrowLeft, Loader2 } from "lucide-react";
-import { getMaterialById } from "@/features/materials/services/MaterialService";
+import { useParams, useRouter } from "next/navigation";
+import { ArrowLeft, Loader2, Edit, Trash2 } from "lucide-react";
+import { getMaterialById, deleteMaterial } from "@/features/materials/services/MaterialService";
 import MaterialBlockRenderer from "@/features/materials/components/MaterialBlockRenderer";
 import type { Material } from "@/types";
 
@@ -13,9 +13,11 @@ const fallbackThumbnail = "https://images.unsplash.com/photo-1501004318641-b39e6
 
 export default function AdminMaterialDetail() {
   const { id: materialId } = useParams<{ id: string }>();
+  const router = useRouter();
   const [material, setMaterial] = useState<Material | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     let isActive = true;
@@ -55,6 +57,21 @@ export default function AdminMaterialDetail() {
     };
   }, [materialId]);
 
+  const handleDelete = async () => {
+    if (!materialId || !confirm('Apakah Anda yakin ingin menghapus materi ini? Tindakan ini tidak dapat dibatalkan.')) return;
+
+    setIsDeleting(true);
+    try {
+      await deleteMaterial(materialId);
+      router.push('/admin/materials');
+    } catch (error) {
+      console.error('Failed to delete material', error);
+      alert('Gagal menghapus materi. Coba lagi nanti.');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-6 py-10">
       <div className="flex flex-col gap-2">
@@ -62,7 +79,28 @@ export default function AdminMaterialDetail() {
           <ArrowLeft size={16} />
           Kembali ke daftar materi
         </Link>
-        <h1 className="text-2xl font-semibold text-foreground">Detail Materi</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-semibold text-foreground">Detail Materi</h1>
+          {!loading && !error && material && (
+            <div className="flex items-center gap-2">
+              <Link
+                href={`/admin/materials/${materialId}/edit`}
+                className="inline-flex items-center gap-2 rounded-lg border border-accent px-3 py-2 text-sm font-medium text-accent transition-colors hover:bg-accent/10"
+              >
+                <Edit size={16} />
+                Edit
+              </Link>
+              <button
+                onClick={handleDelete}
+                disabled={isDeleting}
+                className="inline-flex items-center gap-2 rounded-lg border border-red-500 px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Trash2 size={16} />
+                {isDeleting ? 'Menghapus...' : 'Hapus'}
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {loading && (

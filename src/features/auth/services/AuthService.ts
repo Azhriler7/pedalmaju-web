@@ -13,21 +13,28 @@ interface FirebaseError extends Error {
   code: string;
 }
 
+// DEFINISI DEFAULT AVATAR (Path ke folder public)
+const DEFAULT_AVATAR = '/default-avatar.png'; 
+
 export class AuthService {
   
-  // Register: Create Auth & Save to Firestore
+  // Register
   static async register(email: string, password: string, displayName: string): Promise<User> {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const firebaseUser = userCredential.user;
 
-      await updateProfile(firebaseUser, { displayName });
+      await updateProfile(firebaseUser, { 
+        displayName,
+        photoURL: DEFAULT_AVATAR // Set di Auth Firebase juga
+      });
 
       const user: User = {
         uid: firebaseUser.uid,
         email: email,
         displayName,
-        photoURL: '', 
+        // Ubah ini agar tidak kosong saat awal buat akun
+        photoURL: DEFAULT_AVATAR, 
         role: 'user', 
         bio: '',
         createdAt: Date.now(),
@@ -41,7 +48,7 @@ export class AuthService {
     }
   }
 
-  // Login: Auth & Fetch from Firestore
+  // Login
   static async login(email: string, password: string): Promise<User> {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -53,7 +60,14 @@ export class AuthService {
         throw new Error('Data user tidak ditemukan di database');
       }
 
-      return userDoc.data() as User;
+      const userData = userDoc.data() as User;
+
+      // Fallback aman jika user lama belum punya foto
+      if (!userData.photoURL) {
+        userData.photoURL = DEFAULT_AVATAR;
+      }
+
+      return userData;
     } catch (error: unknown) {
       throw new Error(this.getErrorMessage(error));
     }
@@ -69,7 +83,7 @@ export class AuthService {
     return auth.currentUser;
   }
 
-  // Error Handler Helper
+  // Error Handler
   private static getErrorMessage(error: unknown): string {
     let errorCode = '';
 

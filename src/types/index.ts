@@ -11,6 +11,8 @@ export interface User {
   role: 'admin' | 'user'; // Penentu hak akses & Badge di forum
   bio?: string;           // Info tambahan (mis: "Petani Cabai di Malang")
   createdAt: number;      // Timestamp (Date.now())
+  isOnline?: boolean;     // Status aktif
+  lastSeen?: number;  // Waktu terakhir aktif
 }
 
 // ==========================================

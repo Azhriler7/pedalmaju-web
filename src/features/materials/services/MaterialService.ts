@@ -1,7 +1,7 @@
 import { db } from '@/lib/firebase';
 import { 
   collection, addDoc, getDocs, getDoc, deleteDoc, doc, 
-  query, orderBy 
+  query, orderBy, updateDoc 
 } from 'firebase/firestore';
 import { Material, ContentBlock } from '@/types';
 import { uploadToCloudinary } from '@/lib/cloudinary';
@@ -49,4 +49,28 @@ export const getMaterialById = async (id: string) => {
 
 export const deleteMaterial = async (id: string) => {
   await deleteDoc(doc(db, COLLECTION, id));
+};
+
+// Update Material
+export const updateMaterial = async (
+  id: string,
+  title: string,
+  thumbnailFile: File | null,
+  blocks: ContentBlock[],
+  currentThumbnailUrl?: string
+) => {
+  let thumbnailUrl = currentThumbnailUrl || '';
+
+  // Upload new thumbnail if provided
+  if (thumbnailFile) {
+    thumbnailUrl = await uploadToCloudinary(thumbnailFile, 'materials');
+  }
+
+  // Update in Firestore
+  const docRef = doc(db, COLLECTION, id);
+  await updateDoc(docRef, {
+    title,
+    thumbnailUrl,
+    contentBlocks: blocks,
+  });
 };

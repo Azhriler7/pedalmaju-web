@@ -18,25 +18,8 @@ interface PageProps {
   params: PageParams | Promise<PageParams>;
 }
 
-const formatTimestamp = (timestamp: number) => {
-  try {
-    return new Intl.DateTimeFormat('id-ID', {
-      dateStyle: 'medium',
-      timeStyle: 'short',
-    }).format(new Date(timestamp));
-  } catch {
-    return 'Baru saja';
-  }
-};
-
-const moderationTips = [
-  'Saling menghargai pendapat, terutama saat membagikan praktik lapangan.',
-  'Sertakan konteks data sensor atau kondisi lahan agar diskusi lebih relevan.',
-  'Gunakan fitur laporan jika menemukan konten yang perlu dimoderasi.',
-];
-
-const fallbackAdminAvatar =
-  'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=160&q=80';
+const fallbackAvatar =
+  'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=160&q=80';
 
 const resolveAvatar = (photoUrl: string | null | undefined, fallback: string): string => {
   if (typeof photoUrl === 'string') {
@@ -60,6 +43,17 @@ export default function AdminForumPost({ params }: PageProps) {
   const router = useRouter();
   const { user, loading } = useAuth();
 
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/login');
+      return;
+    }
+    if (!loading && user && user.role !== 'admin') {
+      router.push('/forum');
+      return;
+    }
+  }, [loading, user, router]);
+
   const [post, setPost] = useState<Post | null>(null);
   const [isPostLoading, setIsPostLoading] = useState(true);
   const [postVote, setPostVote] = useState<VoteType['type'] | null>(null);
@@ -78,6 +72,7 @@ export default function AdminForumPost({ params }: PageProps) {
   const composerRef = useRef<HTMLDivElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
+  // Subscribe Post Data
   useEffect(() => {
     setIsPostLoading(true);
     const unsubscribe = ForumService.subscribeToPost(postId, (nextPost) => {
@@ -88,6 +83,7 @@ export default function AdminForumPost({ params }: PageProps) {
     return () => unsubscribe();
   }, [postId]);
 
+  // Subscribe Comments Data
   useEffect(() => {
     const unsubscribe = ForumService.subscribeToComments(postId, (nextComments) => {
       setComments(nextComments);
@@ -96,6 +92,7 @@ export default function AdminForumPost({ params }: PageProps) {
     return () => unsubscribe();
   }, [postId]);
 
+  // Load User Vote for Post
   useEffect(() => {
     if (!user || !post) {
       setPostVote(null);
@@ -122,6 +119,7 @@ export default function AdminForumPost({ params }: PageProps) {
     };
   }, [user, post]);
 
+  // Load User Votes for Comments
   useEffect(() => {
     if (!user) {
       setCommentVotes({});
@@ -159,15 +157,15 @@ export default function AdminForumPost({ params }: PageProps) {
     };
   }, [comments, user, postId]);
 
+  // Auth Redirect
   useEffect(() => {
     if (!loading && !user) {
-      router.push('/login');
+      router.push('/auth/login');
+      return;
     }
-  }, [loading, user, router]);
-
-  useEffect(() => {
     if (!loading && user && user.role !== 'admin') {
-      router.push('/forum');
+      router.push('/user/forum');
+      return;
     }
   }, [loading, user, router]);
 
@@ -177,9 +175,10 @@ export default function AdminForumPost({ params }: PageProps) {
     textareaRef.current?.focus();
   };
 
+  // --- PERBAIKAN UTAMA DI SINI (Handle Post Vote) ---
   const handlePostVote = async (postIdValue: string, type: VoteType['type']) => {
     if (!user) {
-      router.push('/login');
+      router.push('/auth/login');
       return;
     }
 
@@ -187,7 +186,15 @@ export default function AdminForumPost({ params }: PageProps) {
     setErrorMessage(null);
 
     try {
-      const nextVote = await ForumService.togglePostVote(postIdValue, user.uid, type);
+      // Create Actor Object
+      const actor = {
+        uid: user.uid,
+        displayName: user.displayName || 'Admin',
+        photoURL: user.photoURL || ''
+      };
+
+      // Kirim actor object, bukan string user.uid
+      const nextVote = await ForumService.togglePostVote(postIdValue, actor, type);
       setPostVote(nextVote);
     } catch (error) {
       console.error('Failed to vote post', error);
@@ -197,9 +204,10 @@ export default function AdminForumPost({ params }: PageProps) {
     }
   };
 
+  // --- PERBAIKAN UTAMA DI SINI (Handle Comment Vote) ---
   const handleCommentVote = async (commentId: string, type: VoteType['type']) => {
     if (!user) {
-      router.push('/login');
+      router.push('/auth/login');
       return;
     }
 
@@ -211,7 +219,16 @@ export default function AdminForumPost({ params }: PageProps) {
     setErrorMessage(null);
 
     try {
-      const nextVote = await ForumService.toggleCommentVote(postId, commentId, user.uid, type);
+      // Create Actor Object
+      const actor = {
+        uid: user.uid,
+        displayName: user.displayName || 'Admin',
+        photoURL: user.photoURL || ''
+      };
+
+      // Kirim actor object, bukan string user.uid
+      const nextVote = await ForumService.toggleCommentVote(postId, commentId, actor, type);
+      
       setCommentVotes((prev) => ({
         ...prev,
         [commentId]: nextVote,
@@ -232,7 +249,7 @@ export default function AdminForumPost({ params }: PageProps) {
     event.preventDefault();
 
     if (!user) {
-      router.push('/login');
+      router.push('/auth/login');
       return;
     }
 
@@ -250,7 +267,7 @@ export default function AdminForumPost({ params }: PageProps) {
         parentId: replyTarget?.id ?? null,
         authorId: user.uid,
         authorName: user.displayName,
-        authorPhoto: resolveAvatar(user.photoURL, fallbackAdminAvatar),
+        authorPhoto: resolveAvatar(user.photoURL, fallbackAvatar),
         authorBadge: user.role,
         text: commentText.trim(),
       });
@@ -280,7 +297,6 @@ export default function AdminForumPost({ params }: PageProps) {
     ? `Balas ${replyTarget.authorName}...`
     : 'Tuliskan tanggapan atau pertanyaan Anda...';
 
-  const createdAt = useMemo(() => (post ? formatTimestamp(post.createdAt) : ''), [post]);
 
   if (loading || isPostLoading) {
     return (
@@ -291,16 +307,12 @@ export default function AdminForumPost({ params }: PageProps) {
     );
   }
 
-  if (!user || user.role !== 'admin') {
-    return null;
-  }
-
   if (!post) {
     return (
       <div className="mx-auto flex min-h-screen max-w-3xl flex-col items-center justify-center gap-6 px-6 text-center text-foreground">
         <h1 className="text-2xl font-semibold">Postingan tidak ditemukan</h1>
         <p className="max-w-md text-sm text-foreground/70">
-          Kemungkinan postingan sudah dihapus atau tautan kurang tepat. Kembali ke forum admin untuk melihat diskusi terbaru.
+          Kemungkinan postingan sudah dihapus atau tautan kurang tepat. Kembali ke forum untuk melihat diskusi terbaru.
         </p>
         <Button intent="secondary" href="/admin/forum">
           Kembali ke Forum Admin
@@ -309,23 +321,18 @@ export default function AdminForumPost({ params }: PageProps) {
     );
   }
 
-  const isAdminView = user.role === 'admin';
-
-  const threadStats = [
-    { label: 'Dibuat pada', value: createdAt },
-    { label: 'Jumlah komentar', value: `${post.commentsCount}` },
-    { label: 'Total suka', value: `${post.likesCount}` },
-    { label: 'Total tidak suka', value: `${post.dislikesCount}` },
-  ];
+  if (!user || user.role !== 'admin') {
+    return null;
+  }
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-background via-background to-muted/30">
-      <div className="mx-auto w-full max-w-3xl border-x border-border/60 bg-background/85 shadow-sm">
+      <div className="mx-auto w-full max-w-3xl border-x border-border/60 bg-background/80 shadow-sm">
         <header className="sticky top-[72px] z-10 flex items-center justify-between border-b border-border/60 bg-background/90 px-6 py-4 backdrop-blur">
           <Button intent="secondary" size="sm" href="/admin/forum">
             Kembali
           </Button>
-          <span className="text-sm font-semibold text-foreground/80">Detail Postingan</span>
+          <span className="text-sm font-semibold text-foreground/80">Detail Postingan Admin</span>
           <div className="w-[74px]" aria-hidden />
         </header>
 
@@ -337,7 +344,8 @@ export default function AdminForumPost({ params }: PageProps) {
             onComment={handleScrollToComposer}
             isVotePending={isPostVotePending}
             currentUserId={user.uid}
-            isAdminView={isAdminView}
+            isAdminView={true}
+            isAdmin={true}
             onDelete={handlePostDeleted}
             hideDetailLink
           />
@@ -379,7 +387,7 @@ export default function AdminForumPost({ params }: PageProps) {
             />
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-xs text-foreground/60">
-                Berikan tanggapan bernas dan sertakan temuan lapangan yang mendukung keputusan moderasi.
+                Berikan tanggapan bernas dan sertakan data lapangan jika relevan dengan diskusi.
               </p>
               <Button type="submit" intent="primary" size="sm" disabled={isCommentSending}>
                 {isCommentSending ? 'Mengirim...' : 'Kirim Komentar'}
@@ -388,7 +396,7 @@ export default function AdminForumPost({ params }: PageProps) {
           </form>
         </section>
 
-        <section className="border-b border-border/60 px-6 py-6">
+        <section className="px-6 py-6">
           <header className="mb-4 flex items-center justify-between">
             <div>
               <h2 className="text-lg font-semibold text-foreground">Tanggapan Komunitas</h2>
@@ -411,36 +419,6 @@ export default function AdminForumPost({ params }: PageProps) {
               isVotePendingIds={pendingCommentVoteIds}
             />
           )}
-        </section>
-
-        <section className="px-6 py-6">
-          <header className="mb-4">
-            <h2 className="text-lg font-semibold text-foreground">Ringkasan Moderasi</h2>
-            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-foreground/50">
-              Insight untuk admin
-            </p>
-          </header>
-
-          <div className="grid gap-3 sm:grid-cols-2">
-            {threadStats.map((stat) => (
-              <article
-                key={stat.label}
-                className="rounded-2xl border border-border/70 bg-background/90 px-4 py-4 text-sm text-foreground/70"
-              >
-                <p className="text-xs uppercase tracking-[0.25em] text-foreground/50">{stat.label}</p>
-                <p className="mt-2 text-lg font-semibold text-foreground">{stat.value}</p>
-              </article>
-            ))}
-          </div>
-
-          <div className="mt-6 space-y-2 rounded-2xl border border-border/70 bg-muted/15 px-5 py-4 text-sm text-foreground/70">
-            <h3 className="text-xs font-semibold uppercase tracking-[0.3em] text-foreground/50">Tips Etika Diskusi</h3>
-            <ul className="space-y-2">
-              {moderationTips.map((tip) => (
-                <li key={tip}>{tip}</li>
-              ))}
-            </ul>
-          </div>
         </section>
       </div>
     </main>

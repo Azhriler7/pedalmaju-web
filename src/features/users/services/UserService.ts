@@ -1,9 +1,20 @@
 import { db } from '@/lib/firebase';
-import { collection, doc, getDoc, getDocs, limit, query, updateDoc } from 'firebase/firestore';
+import { 
+  collection, 
+  doc, 
+  getDoc, 
+  getDocs, 
+  limit, 
+  query, 
+  updateDoc, 
+  where, 
+  orderBy, 
+  onSnapshot 
+} from 'firebase/firestore';
 import { User } from '@/types';
 import { uploadToCloudinary } from '@/lib/cloudinary';
 
-// Ambil data user berdasarkan UID
+// 1. Get User Profile
 export const getUserProfile = async (uid: string) => {
   try {
     const docRef = doc(db, 'users', uid);
@@ -20,7 +31,7 @@ export const getUserProfile = async (uid: string) => {
   }
 };
 
-// Update data user (Bio, Nama, Foto)
+// 2. Update Profile
 export const updateUserProfile = async (uid: string, data: Partial<User>, photoFile?: File) => {
   try {
     const updatePayload: Partial<User> = {};
@@ -48,6 +59,7 @@ export const updateUserProfile = async (uid: string, data: Partial<User>, photoF
   }
 };
 
+// 3. Get All Users (Admin)
 export const getAllUsers = async () => {
   try {
     const q = query(collection(db, 'users'), limit(50));
@@ -57,4 +69,54 @@ export const getAllUsers = async () => {
     console.error('Error get all users:', error);
     return [] as User[];
   }
+};
+
+// 4. Update Status (Heartbeat)
+export const updateUserStatus = async (uid: string, isOnline: boolean) => {
+  try {
+    const userRef = doc(db, 'users', uid);
+    await updateDoc(userRef, {
+      isOnline,
+      lastSeen: Date.now()
+    });
+  } catch (error) {
+    // Silent fail
+    console.error("Error update status", error);
+  }
+};
+
+// 5. Get Online Users (Fetch Once - YANG HILANG TADI)
+export const getOnlineUsers = async () => {
+  const fiveMinutesAgo = Date.now() - (5 * 60 * 1000);
+
+  const q = query(
+    collection(db, 'users'),
+    where('isOnline', '==', true),
+    where('lastSeen', '>', fiveMinutesAgo),
+    orderBy('lastSeen', 'desc'),
+    limit(10)
+  );
+
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map(doc => doc.data() as User);
+};
+
+// 6. Listen User Online (Realtime)
+export const listenToOnlineUsers = (callback: (users: User[]) => void) => {
+  const timeThreshold = Date.now() - (30 * 1000);
+
+  const q = query(
+    collection(db, 'users'),
+    where('isOnline', '==', true),
+    where('lastSeen', '>', timeThreshold),
+    orderBy('lastSeen', 'desc'),
+    limit(20)
+  );
+
+  const unsubscribe = onSnapshot(q, (snapshot) => {
+    const users = snapshot.docs.map(doc => doc.data() as User);
+    callback(users);
+  });
+
+  return unsubscribe;
 };

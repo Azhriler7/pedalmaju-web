@@ -63,3 +63,15 @@ export const markAllAsRead = async (userId: string) => {
   
   await Promise.all(promises);
 };
+
+// Get unread notifications count
+export const getUnreadCount = async (userId: string): Promise<number> => {
+  const q = query(
+    collection(db, COLLECTION),
+    where('recipientId', '==', userId),
+    where('isRead', '==', false)
+  );
+
+  const snapshot = await getDocs(q);
+  return snapshot.size;
+};
