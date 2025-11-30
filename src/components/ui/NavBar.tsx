@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { AuthService } from '@/features/auth/services/AuthService';
@@ -33,8 +33,36 @@ const NavBar: React.FC<NavBarProps> = ({
 }) => {
   const router = useRouter();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const closeMenuTimer = useRef<NodeJS.Timeout | null>(null);
+
+  const openProfileMenu = () => {
+    if (closeMenuTimer.current) {
+      clearTimeout(closeMenuTimer.current);
+      closeMenuTimer.current = null;
+    }
+    setIsProfileOpen(true);
+  };
+
+  const scheduleCloseProfileMenu = () => {
+    if (closeMenuTimer.current) {
+      clearTimeout(closeMenuTimer.current);
+    }
+    closeMenuTimer.current = setTimeout(() => {
+      setIsProfileOpen(false);
+      closeMenuTimer.current = null;
+    }, 160);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (closeMenuTimer.current) {
+        clearTimeout(closeMenuTimer.current);
+      }
+    };
+  }, []);
   const displayName = userName ?? userEmail;
   const userInitial = (userName ?? userEmail ?? 'U').charAt(0).toUpperCase();
+  const brandHref = variant === 'admin' ? '/admin/dashboard' : variant === 'user' ? '/dashboard' : '/';
   
   const handleLogout = async () => {
     await AuthService.logout();
@@ -62,7 +90,7 @@ const NavBar: React.FC<NavBarProps> = ({
         return (
           <>
             <div className="flex items-center space-x-8">
-              <Link href="/" className="text-xl font-bold text-green-600">
+              <Link href={brandHref} className="text-xl font-bold text-green-600">
                 PedalMaju
               </Link>
               <div className="hidden space-x-6 md:flex">
@@ -93,7 +121,7 @@ const NavBar: React.FC<NavBarProps> = ({
         return (
           <>
             <div className="flex items-center space-x-8">
-              <Link href="/" className="text-xl font-bold text-green-600">
+              <Link href={brandHref} className="text-xl font-bold text-green-600">
                 PedalMaju
               </Link>
               <div className="hidden space-x-6 md:flex">
@@ -103,16 +131,94 @@ const NavBar: React.FC<NavBarProps> = ({
                 <Link href="/admin/materials" className="text-sm font-medium text-gray-600 hover:text-green-600 transition-colors">
                   Kelola Materi
                 </Link>
+                <Link href="/admin/users" className="text-sm font-medium text-gray-600 hover:text-green-600 transition-colors">
+                  Pengguna
+                </Link>
                 <Link href="/admin/forum" className="text-sm font-medium text-gray-600 hover:text-green-600 transition-colors">
                   Forum
                 </Link>
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600">{userEmail}</span>
-              <button onClick={onLogout || handleLogout} className={`${outlineBtnClass} hover:bg-red-50 hover:text-red-700 border-green-600`}>
-                Logout
-              </button>
+              {displayName && (
+                <span className="hidden text-sm font-medium text-gray-600 md:block">
+                  {displayName}
+                </span>
+              )}
+              <div
+                className="relative"
+                onMouseEnter={openProfileMenu}
+                onMouseLeave={scheduleCloseProfileMenu}
+                onFocus={openProfileMenu}
+                onBlur={scheduleCloseProfileMenu}
+              >
+                <button
+                  type="button"
+                  className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-border bg-muted/60 text-sm font-semibold text-foreground shadow-sm transition-transform hover:-translate-y-0.5"
+                  aria-haspopup="true"
+                  aria-expanded={isProfileOpen}
+                >
+                  {avatarUrl ? (
+                    <span
+                      aria-hidden="true"
+                      className="absolute inset-0 bg-cover bg-center"
+                      style={{ backgroundImage: `url(${avatarUrl})` }}
+                    />
+                  ) : (
+                    <span>{userInitial}</span>
+                  )}
+                </button>
+                <div
+                  className={`absolute right-0 mt-3 w-60 rounded-2xl border border-border bg-background/95 p-4 shadow-lg transition-all duration-200 dark:border-white/10 ${
+                    isProfileOpen ? 'pointer-events-auto opacity-100 translate-y-0' : 'pointer-events-none opacity-0 -translate-y-2'
+                  }`}
+                  onMouseEnter={openProfileMenu}
+                  onMouseLeave={scheduleCloseProfileMenu}
+                >
+                  <div className="space-y-2 border-b border-border/80 pb-3">
+                    <p className="text-sm font-semibold text-foreground">{displayName ?? 'Admin'}</p>
+                    {userEmail && <p className="text-xs text-foreground/60">{userEmail}</p>}
+                    <span className="inline-flex w-fit items-center rounded-full border border-accent/40 bg-accent/15 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.25em] text-accent">
+                      Admin
+                    </span>
+                  </div>
+                  <div className="mt-3 space-y-2 text-sm text-foreground/80">
+                    {profileHref && (
+                      <Link
+                        href={profileHref}
+                        className="block rounded-lg px-3 py-2 transition-colors hover:bg-muted/60"
+                      >
+                        Lihat Profil
+                      </Link>
+                    )}
+                    <Link
+                      href="/admin/dashboard"
+                      className="block rounded-lg px-3 py-2 transition-colors hover:bg-muted/60"
+                    >
+                      Dashboard Admin
+                    </Link>
+                    <Link
+                      href="/admin/users"
+                      className="block rounded-lg px-3 py-2 transition-colors hover:bg-muted/60"
+                    >
+                      Kelola Pengguna
+                    </Link>
+                    <Link
+                      href="/admin/forum"
+                      className="block rounded-lg px-3 py-2 transition-colors hover:bg-muted/60"
+                    >
+                      Forum Admin
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={onLogout || handleLogout}
+                      className="w-full rounded-lg px-3 py-2 text-left transition-colors hover:bg-red-50 hover:text-red-600"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </>
         );
@@ -120,17 +226,17 @@ const NavBar: React.FC<NavBarProps> = ({
         return (
           <>
             <div className="flex items-center space-x-8">
-              <Link href="/" className="text-xl font-bold text-green-600">
+              <Link href={brandHref} className="text-xl font-bold text-green-600">
                 PedalMaju
               </Link>
               <div className="hidden space-x-6 md:flex">
-                <Link href="/user/dashboard" className="text-sm font-medium text-gray-600 hover:text-green-600 transition-colors">
+                <Link href="/dashboard" className="text-sm font-medium text-gray-600 hover:text-green-600 transition-colors">
                   Dashboard
                 </Link>
-                <Link href="/user/forum" className="text-sm font-medium text-gray-600 hover:text-green-600 transition-colors">
+                <Link href="/forum" className="text-sm font-medium text-gray-600 hover:text-green-600 transition-colors">
                   Forum
                 </Link>
-                <Link href="/user/materials" className="text-sm font-medium text-gray-600 hover:text-green-600 transition-colors">
+                <Link href="/materials" className="text-sm font-medium text-gray-600 hover:text-green-600 transition-colors">
                   Kelas
                 </Link>
               </div>
@@ -143,8 +249,10 @@ const NavBar: React.FC<NavBarProps> = ({
               )}
               <div
                 className="relative"
-                onMouseEnter={() => setIsProfileOpen(true)}
-                onMouseLeave={() => setIsProfileOpen(false)}
+                onMouseEnter={openProfileMenu}
+                onMouseLeave={scheduleCloseProfileMenu}
+                onFocus={openProfileMenu}
+                onBlur={scheduleCloseProfileMenu}
               >
                 <button
                   type="button"
@@ -166,16 +274,15 @@ const NavBar: React.FC<NavBarProps> = ({
                   className={`absolute right-0 mt-3 w-56 rounded-2xl border border-border bg-background/95 p-4 shadow-lg transition-all duration-200 dark:border-white/10 ${
                     isProfileOpen ? 'pointer-events-auto opacity-100 translate-y-0' : 'pointer-events-none opacity-0 -translate-y-2'
                   }`}
+                  onMouseEnter={openProfileMenu}
+                  onMouseLeave={scheduleCloseProfileMenu}
                 >
                   <div className="space-y-1 border-b border-border/80 pb-3">
                     <p className="text-sm font-semibold text-foreground">{displayName ?? 'Pengguna'}</p>
                     {userEmail && <p className="text-xs text-foreground/60">{userEmail}</p>}
                   </div>
                   <div className="mt-3 space-y-2 text-sm text-foreground/80">
-                    <Link
-                      href={profileHref ?? '/user/profile'}
-                      className="block rounded-lg px-3 py-2 transition-colors hover:bg-muted/60"
-                    >
+                    <Link href={profileHref ?? '/profile'} className="block rounded-lg px-3 py-2 transition-colors hover:bg-muted/60">
                       Lihat Profil
                     </Link>
                     <button

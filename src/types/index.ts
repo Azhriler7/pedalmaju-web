@@ -60,6 +60,7 @@ export interface Post {
   // Konten Post
   content: string;        // Teks status
   imageUrl?: string;      // Foto lampiran (Cloudinary) - Opsional
+  tags?: string[];         // Tag kategori (misal: ["pertanian", "irigasi"]) - Opsional
   
   // Statistik Interaksi (Counter sederhana untuk tampilan)
   likesCount: number;

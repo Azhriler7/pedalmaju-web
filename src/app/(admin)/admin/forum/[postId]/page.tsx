@@ -18,8 +18,25 @@ interface PageProps {
   params: PageParams | Promise<PageParams>;
 }
 
-const fallbackAvatar =
-  'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=160&q=80';
+const formatTimestamp = (timestamp: number) => {
+  try {
+    return new Intl.DateTimeFormat('id-ID', {
+      dateStyle: 'medium',
+      timeStyle: 'short',
+    }).format(new Date(timestamp));
+  } catch {
+    return 'Baru saja';
+  }
+};
+
+const moderationTips = [
+  'Saling menghargai pendapat, terutama saat membagikan praktik lapangan.',
+  'Sertakan konteks data sensor atau kondisi lahan agar diskusi lebih relevan.',
+  'Gunakan fitur laporan jika menemukan konten yang perlu dimoderasi.',
+];
+
+const fallbackAdminAvatar =
+  'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=160&q=80';
 
 const resolveAvatar = (photoUrl: string | null | undefined, fallback: string): string => {
   if (typeof photoUrl === 'string') {
@@ -31,7 +48,7 @@ const resolveAvatar = (photoUrl: string | null | undefined, fallback: string): s
   return fallback;
 };
 
-export default function UserForumPost({ params }: PageProps) {
+export default function AdminForumPost({ params }: PageProps) {
   const paramsPromise = useMemo(() => {
     if (typeof (params as Promise<PageParams>).then === 'function') {
       return params as Promise<PageParams>;
@@ -148,6 +165,12 @@ export default function UserForumPost({ params }: PageProps) {
     }
   }, [loading, user, router]);
 
+  useEffect(() => {
+    if (!loading && user && user.role !== 'admin') {
+      router.push('/forum');
+    }
+  }, [loading, user, router]);
+
   const handleScrollToComposer = () => {
     setReplyTarget(null);
     composerRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -227,7 +250,7 @@ export default function UserForumPost({ params }: PageProps) {
         parentId: replyTarget?.id ?? null,
         authorId: user.uid,
         authorName: user.displayName,
-        authorPhoto: resolveAvatar(user.photoURL, fallbackAvatar),
+        authorPhoto: resolveAvatar(user.photoURL, fallbackAdminAvatar),
         authorBadge: user.role,
         text: commentText.trim(),
       });
@@ -250,13 +273,14 @@ export default function UserForumPost({ params }: PageProps) {
   };
 
   const handlePostDeleted = () => {
-    router.push('/forum');
+    router.push('/admin/forum');
   };
 
   const commentPlaceholder = replyTarget
     ? `Balas ${replyTarget.authorName}...`
     : 'Tuliskan tanggapan atau pertanyaan Anda...';
 
+  const createdAt = useMemo(() => (post ? formatTimestamp(post.createdAt) : ''), [post]);
 
   if (loading || isPostLoading) {
     return (
@@ -267,27 +291,38 @@ export default function UserForumPost({ params }: PageProps) {
     );
   }
 
+  if (!user || user.role !== 'admin') {
+    return null;
+  }
+
   if (!post) {
     return (
       <div className="mx-auto flex min-h-screen max-w-3xl flex-col items-center justify-center gap-6 px-6 text-center text-foreground">
         <h1 className="text-2xl font-semibold">Postingan tidak ditemukan</h1>
         <p className="max-w-md text-sm text-foreground/70">
-          Kemungkinan postingan sudah dihapus atau tautan kurang tepat. Kembali ke forum untuk melihat diskusi terbaru.
+          Kemungkinan postingan sudah dihapus atau tautan kurang tepat. Kembali ke forum admin untuk melihat diskusi terbaru.
         </p>
-        <Button intent="secondary" href="/forum">
-          Kembali ke Forum
+        <Button intent="secondary" href="/admin/forum">
+          Kembali ke Forum Admin
         </Button>
       </div>
     );
   }
 
-  const isAdminView = user?.role === 'admin';
+  const isAdminView = user.role === 'admin';
+
+  const threadStats = [
+    { label: 'Dibuat pada', value: createdAt },
+    { label: 'Jumlah komentar', value: `${post.commentsCount}` },
+    { label: 'Total suka', value: `${post.likesCount}` },
+    { label: 'Total tidak suka', value: `${post.dislikesCount}` },
+  ];
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-background via-background to-muted/30">
-      <div className="mx-auto w-full max-w-3xl border-x border-border/60 bg-background/80 shadow-sm">
+      <div className="mx-auto w-full max-w-3xl border-x border-border/60 bg-background/85 shadow-sm">
         <header className="sticky top-[72px] z-10 flex items-center justify-between border-b border-border/60 bg-background/90 px-6 py-4 backdrop-blur">
-          <Button intent="secondary" size="sm" href="/forum">
+          <Button intent="secondary" size="sm" href="/admin/forum">
             Kembali
           </Button>
           <span className="text-sm font-semibold text-foreground/80">Detail Postingan</span>
@@ -301,7 +336,7 @@ export default function UserForumPost({ params }: PageProps) {
             onVote={handlePostVote}
             onComment={handleScrollToComposer}
             isVotePending={isPostVotePending}
-            currentUserId={user?.uid}
+            currentUserId={user.uid}
             isAdminView={isAdminView}
             onDelete={handlePostDeleted}
             hideDetailLink
@@ -344,7 +379,7 @@ export default function UserForumPost({ params }: PageProps) {
             />
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-xs text-foreground/60">
-                Berikan tanggapan bernas dan sertakan data lapangan jika relevan dengan diskusi.
+                Berikan tanggapan bernas dan sertakan temuan lapangan yang mendukung keputusan moderasi.
               </p>
               <Button type="submit" intent="primary" size="sm" disabled={isCommentSending}>
                 {isCommentSending ? 'Mengirim...' : 'Kirim Komentar'}
@@ -353,7 +388,7 @@ export default function UserForumPost({ params }: PageProps) {
           </form>
         </section>
 
-        <section className="px-6 py-6">
+        <section className="border-b border-border/60 px-6 py-6">
           <header className="mb-4 flex items-center justify-between">
             <div>
               <h2 className="text-lg font-semibold text-foreground">Tanggapan Komunitas</h2>
@@ -376,6 +411,36 @@ export default function UserForumPost({ params }: PageProps) {
               isVotePendingIds={pendingCommentVoteIds}
             />
           )}
+        </section>
+
+        <section className="px-6 py-6">
+          <header className="mb-4">
+            <h2 className="text-lg font-semibold text-foreground">Ringkasan Moderasi</h2>
+            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-foreground/50">
+              Insight untuk admin
+            </p>
+          </header>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            {threadStats.map((stat) => (
+              <article
+                key={stat.label}
+                className="rounded-2xl border border-border/70 bg-background/90 px-4 py-4 text-sm text-foreground/70"
+              >
+                <p className="text-xs uppercase tracking-[0.25em] text-foreground/50">{stat.label}</p>
+                <p className="mt-2 text-lg font-semibold text-foreground">{stat.value}</p>
+              </article>
+            ))}
+          </div>
+
+          <div className="mt-6 space-y-2 rounded-2xl border border-border/70 bg-muted/15 px-5 py-4 text-sm text-foreground/70">
+            <h3 className="text-xs font-semibold uppercase tracking-[0.3em] text-foreground/50">Tips Etika Diskusi</h3>
+            <ul className="space-y-2">
+              {moderationTips.map((tip) => (
+                <li key={tip}>{tip}</li>
+              ))}
+            </ul>
+          </div>
         </section>
       </div>
     </main>
