@@ -124,30 +124,38 @@ export const PostCard: React.FC<PostCardProps> = ({
 
 	return (
 		<article className="flex gap-4 border-b border-border/60 px-5 py-6 transition-colors hover:bg-muted/20">
-			<div className="relative mt-1 h-11 w-11 flex-shrink-0 overflow-hidden rounded-full border border-border/70 bg-muted/40">
+			<Link href={`/profile/${post.authorId}`} className="group relative mt-1 h-11 w-11 flex-shrink-0 overflow-hidden rounded-full border border-border/70 bg-muted/40">
 				<Image
 					src={post.authorPhoto || '/default-avatar.png'}
 					alt={post.authorName}
 					fill
 					sizes="48px"
-					className="rounded-full object-cover"
+					className="rounded-full object-cover group-hover:opacity-80 transition-opacity"
 				/>
 				{post.authorBadge === "admin" && (
 					<span className="absolute -bottom-1 -right-1 inline-flex items-center rounded-full bg-accent px-2 py-0.5 text-[10px] font-semibold uppercase text-white shadow-sm">
 						Admin
 					</span>
 				)}
-			</div>
+			</Link>
 
 			<div className="flex-1 space-y-4">
 				<header className="flex items-start justify-between gap-3">
 					<div className="flex flex-col">
 						<div className="flex items-center gap-2">
-							<p className="text-sm font-semibold text-foreground">{post.authorName}</p>
+							<Link href={`/profile/${post.authorId}`} className="group">
+								<p className="text-sm font-semibold text-foreground group-hover:text-green-600 group-hover:underline transition-colors">
+									{post.authorName}
+								</p>
+							</Link>
 							<span className="text-xs text-foreground/50">•</span>
 							<span className="text-xs text-foreground/60">{formattedDate}</span>
 						</div>
-						<p className="text-xs text-foreground/50">@{post.authorName?.toLowerCase().replace(/\s+/g, "")}</p>
+						<Link href={`/profile/${post.authorId}`}>
+							<p className="text-xs text-foreground/50 hover:text-green-600 transition-colors">
+								@{post.authorName?.toLowerCase().replace(/\s+/g, "")}
+							</p>
+						</Link>
 					</div>
 					{canDelete && (
 						<div className="relative" ref={actionMenuRef}>
