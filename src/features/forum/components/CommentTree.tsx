@@ -2,6 +2,7 @@
 
 import React, { useMemo } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { MessageCircle } from "lucide-react";
 import { Comment as CommentType, Vote as VoteType } from "@/types";
 import VoteButton from "./VoteButton";
@@ -91,7 +92,9 @@ const CommentBubble: React.FC<{
 
 			<div className="flex-1 space-y-3">
 				<div className="flex flex-wrap items-center gap-2">
-					<p className="text-sm font-semibold text-foreground">{comment.authorName}</p>
+					<Link href={`/profile/${comment.authorId}`} className="hover:underline hover:text-green-600 transition-colors">
+						<p className="text-sm font-semibold text-foreground">{comment.authorName}</p>
+					</Link>
 					<span className="text-xs text-foreground/50">•</span>
 					<span className="text-xs text-foreground/60">{formatTime(comment.createdAt)}</span>
 				</div>
