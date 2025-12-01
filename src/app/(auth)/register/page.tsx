@@ -29,20 +29,20 @@ export default function RegisterPage() {
               Buat akun dan bangun strategi pertanian berbasis data.
             </h1>
             <p className="text-base text-foreground/70">
-              Personalisasi materi belajar, simpan insight lapangan, dan kolaborasi dengan mentor yang ahli di bidang IoT pertanian.
+              Akses materi pembelajaran, dan forum komunitas untuk berbagi pengetahuan IoT di bidang pertanian.
             </p>
             <div className="grid gap-3 text-sm text-foreground/75">
               <div className="rounded-2xl border border-border/70 bg-muted/20 p-4">
-                <p className="font-semibold text-foreground">Kelas Terstruktur</p>
-                <p className="text-foreground/60">Kurasi modul mulai dari instalasi sensor hingga analitik panen.</p>
+                <p className="font-semibold text-foreground">Materi Statis</p>
+                <p className="text-foreground/60">Koleksi gambar, video, dan teks tentang IoT pertanian.</p>
               </div>
               <div className="rounded-2xl border border-border/70 bg-muted/20 p-4">
-                <p className="font-semibold text-foreground">Komunitas Aktif</p>
-                <p className="text-foreground/60">Diskusi harian dan sesi mentoring rutin setiap minggu.</p>
+                <p className="font-semibold text-foreground">Forum Komunitas</p>
+                <p className="text-foreground/60">Berbagi pengetahuan dengan petani lain dan admin pengawas.</p>
               </div>
             </div>
             <p className="text-xs uppercase tracking-[0.3em] text-foreground/50">
-              Lebih dari 1.200 petani telah bergabung
+              Bergabunglah dengan komunitas petani IoT
             </p>
           </div>
 

@@ -12,45 +12,45 @@ const landingSections = [
 
 const solutionHighlights = [
   {
-    title: "Modul Belajar Terstruktur",
+    title: "Materi Pembelajaran Lengkap",
     description:
-      "Ikuti kurikulum bertahap yang mengenalkan konsep dasar hingga penerapan teknologi IoT di pertanian.",
+      "Pelajari konsep IoT pertanian melalui gambar, video, dan teks yang mudah dipahami.",
   },
   {
-    title: "Pendampingan Mentor",
+    title: "Forum Berbagi Pengetahuan",
     description:
-      "Akses sesi tanya jawab langsung dengan praktisi yang berpengalaman mengimplementasikan IoT di lahan.",
+      "Diskusikan pengalaman dan tips implementasi IoT bersama komunitas petani, dengan admin yang aktif mengawasi dan berkontribusi.",
   },
   {
-    title: "Simulasi Perangkat",
+    title: "Akses Mudah dan Terstruktur",
     description:
-      "Pelajari cara membaca data sensor dan menyusun alur kerja otomatis melalui studi kasus dan walkthrough.",
+      "Navigasi materi berdasarkan topik, dari dasar hingga lanjutan, dengan forum sebagai tempat bertukar ide.",
   },
 ];
 
 const featureCards = [
   {
-    title: "Kelas Interaktif",
+    title: "Materi Multimedia",
     points: [
-      "Video, artikel, dan kuis untuk memahami IoT pertanian",
-      "Rangkuman materi yang mudah diunduh",
-      "Sertifikat kelulusan tiap modul",
+      "Koleksi gambar dan video demonstrasi perangkat IoT",
+      "Artikel teks ringkas tentang konsep dasar",
+      "Kemudahan akses materi di mana saja",
     ],
   },
   {
     title: "Forum Komunitas",
     points: [
-      "Diskusi topik IoT bersama mentor dan petani",
-      "Berbagi pengalaman penggunaan teknologi",
-      "Kumpulan rekomendasi alat dan pemasok",
+      "Berbagi pengetahuan antar petani dan admin",
+      "Diskusi topik IoT tanpa batasan waktu",
+      "Admin aktif posting dan mengawasi konten",
     ],
   },
   {
-    title: "Perpustakaan Materi",
+    title: "Perpustakaan Referensi",
     points: [
-      "Studi kasus keberhasilan implementasi IoT",
-      "Template rencana kerja digital",
-      "Checklist persiapan instalasi perangkat",
+      "Studi kasus implementasi IoT statis",
+      "Template panduan instalasi perangkat",
+      "Checklist persiapan tanpa interaksi real-time",
     ],
   },
 ];
@@ -59,17 +59,17 @@ const communityHighlights = [
   {
     title: "Forum Diskusi",
     description:
-      "Bertukar tips konfigurasi sensor, integrasi data, dan strategi adopsi teknologi bersama komunitas.",
+      "Bertukar tips dan pengalaman implementasi IoT bersama komunitas, dengan admin yang mengawasi dan berkontribusi posting.",
   },
   {
-    title: "Program Pendampingan",
+    title: "Materi Pembelajaran",
     description:
-      "Ikuti kelas live dan workshop rutin yang memandu langkah demi langkah penerapan IoT di lahan Anda.",
+      "Akses koleksi gambar, video, dan teks tentang IoT pertanian kapan saja.",
   },
   {
-    title: "Cerita Sukses",
+    title: "Komunitas Terbuka",
     description:
-      "Dengar langsung pengalaman petani yang berhasil mengoptimalkan produksi dengan teknologi.",
+      "Bergabung dengan petani lain dan admin untuk berbagi pengetahuan tanpa sesi terjadwal.",
   },
 ];
 
@@ -93,8 +93,8 @@ export default function Home() {
               E-Learning & Komunitas IoT Pertanian
             </h1>
             <p className="mx-auto max-w-2xl text-base text-foreground/80 sm:text-lg">
-              Kuasai teknologi IoT sebelum diterapkan di lahan. Pelajari konsep, pahami perangkat, dan diskusikan strategi
-              implementasi bersama mentor serta komunitas petani digital.
+              Kuasai teknologi IoT sebelum diterapkan di lahan. Pelajari konsep melalui materi informatif dan diskusikan strategi
+              implementasi bersama komunitas petani di forum.
             </p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row">
@@ -121,8 +121,8 @@ export default function Home() {
               Bekal lengkap sebelum menerapkan perangkat di lapangan
             </h2>
             <p className="text-base text-foreground/70">
-              PedalMaju memfasilitasi petani mempelajari dasar perangkat, cara membaca data, dan alur kerja digital melalui materi teoritis
-              dan praktik ringan. Semua disusun agar proses adopsi teknologi berlangsung terarah dan efisien.
+              PedalMaju memfasilitasi petani mempelajari dasar perangkat IoT melalui materi dan berbagi pengetahuan di forum.
+              Semua disusun agar proses adopsi teknologi berlangsung terarah dan efisien.
             </p>
           </div>
           <div className="space-y-4">
@@ -153,7 +153,7 @@ export default function Home() {
             </h2>
             <p className="mx-auto max-w-3xl text-base text-foreground/70">
               Materi multimedia, forum aktif, dan bank referensi dirancang untuk membantu petani memahami teknologi serta
-              membangun jejaring sebelum menerapkan IoT secara penuh.
+              membangun jejaring melalui berbagi pengetahuan.
             </p>
           </div>
           <div className="grid gap-6 md:grid-cols-3">
@@ -190,7 +190,7 @@ export default function Home() {
               Belajar bersama komunitas petani berbasis teknologi
             </h2>
             <p className="text-base text-foreground/70">
-              PedalMaju mempertemukan mentor, petani modern, dan pegiat teknologi untuk saling berbagi pengetahuan.
+              PedalMaju mempertemukan petani dan admin untuk saling berbagi pengetahuan IoT.
               Ikuti diskusi rutin, dapatkan referensi perangkat, dan temukan dukungan ketika mulai mengadopsi IoT.
             </p>
           </div>
