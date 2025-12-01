@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import NavBar from "@/components/ui/NavBar";
 import { useAuth } from "@/hooks/useAuth";
+import { usePresence } from "@/hooks/usePresence"; 
 
 export default function UserLayout({
   children,
@@ -13,6 +14,8 @@ export default function UserLayout({
 }) {
   const router = useRouter();
   const { user, loading } = useAuth();
+  
+  usePresence(); 
 
   useEffect(() => {
     if (!loading && !user) {
