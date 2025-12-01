@@ -29,24 +29,24 @@ export default function LoginPage() {
               Masuk dan lanjutkan perjalanan pertanian cerdas Anda.
             </h1>
             <p className="text-base text-foreground/70">
-              Akses dashboard personal, materi pembelajaran, dan diskusi komunitas yang relevan dengan data lapangan Anda.
+              Akses materi pembelajaran, dan forum komunitas untuk berbagi pengetahuan IoT di bidang pertanian.
             </p>
             <ul className="space-y-3 text-sm text-foreground/75">
               <li className="flex items-start gap-3">
                 <span aria-hidden className="mt-1 h-2 w-2 rounded-full bg-accent" />
-                Statistik sensor real-time langsung di dashboard.
+                Materi gambar, video, dan teks siap diakses offline.
               </li>
               <li className="flex items-start gap-3">
                 <span aria-hidden className="mt-1 h-2 w-2 rounded-full bg-accent" />
-                Rekomendasi materi berdasarkan progres belajar Anda.
+                Forum untuk berbagi pengetahuan dengan komunitas.
               </li>
               <li className="flex items-start gap-3">
                 <span aria-hidden className="mt-1 h-2 w-2 rounded-full bg-accent" />
-                Forum mentor dan petani modern siap membantu kapan saja.
+                Admin aktif mengawasi dan berkontribusi di forum.
               </li>
             </ul>
             <div className="rounded-2xl border border-accent/20 bg-accent/10 p-4 text-sm text-accent">
-              &ldquo;PedalMaju membantu kami mengambil keputusan penyiraman lebih cepat dan tepat.&rdquo; — Komunitas Lembang
+              &ldquo;Forum PedalMaju membantu saya belajar IoT dari pengalaman petani lain.&rdquo; — Petani Muda
             </div>
           </div>
 
